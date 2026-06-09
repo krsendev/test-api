@@ -19,6 +19,28 @@ router.get("/", menuController.getMenus);
 
 /**
  * @swagger
+ * /api/menu/{id}:
+ *   get:
+ *     summary: Menampilkan menu berdasarkan ID
+ *     tags:
+ *       - Menu
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID menu
+ *     responses:
+ *       200:
+ *         description: Berhasil mengambil data menu
+ *       404:
+ *         description: Menu tidak ditemukan
+ */
+router.get("/:id", menuController.getMenuById);
+
+/**
+ * @swagger
  * /api/menu:
  *   post:
  *     summary: Menambahkan menu baru (admin/operator)
@@ -54,5 +76,77 @@ router.get("/", menuController.getMenus);
  *         description: Tidak memiliki akses
  */
 router.post("/", verifyToken, authorizeRoles("admin", "operator"), menuController.createMenu);
+
+/**
+ * @swagger
+ * /api/menu/{id}:
+ *   put:
+ *     summary: Mengupdate menu (admin/operator)
+ *     tags:
+ *       - Menu
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID menu
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nama_menu:
+ *                 type: string
+ *                 example: "Nasi Ayam Bakar"
+ *               harga:
+ *                 type: number
+ *                 example: 30000
+ *               deskripsi:
+ *                 type: string
+ *                 example: "Nasi dengan ayam bakar spesial"
+ *     responses:
+ *       200:
+ *         description: Menu berhasil diupdate
+ *       401:
+ *         description: Token tidak valid
+ *       403:
+ *         description: Tidak memiliki akses
+ *       404:
+ *         description: Menu tidak ditemukan
+ */
+router.put("/:id", verifyToken, authorizeRoles("admin", "operator"), menuController.updateMenu);
+
+/**
+ * @swagger
+ * /api/menu/{id}:
+ *   delete:
+ *     summary: Menghapus menu (admin/operator)
+ *     tags:
+ *       - Menu
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID menu
+ *     responses:
+ *       200:
+ *         description: Menu berhasil dihapus
+ *       401:
+ *         description: Token tidak valid
+ *       403:
+ *         description: Tidak memiliki akses
+ *       404:
+ *         description: Menu tidak ditemukan
+ */
+router.delete("/:id", verifyToken, authorizeRoles("admin", "operator"), menuController.deleteMenu);
 
 module.exports = router;
